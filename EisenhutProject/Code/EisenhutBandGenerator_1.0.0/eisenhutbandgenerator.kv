@@ -1,0 +1,401 @@
+<MainScreen>:
+    name: 'main'
+    # Связываем свойства с элементами
+    band_name_input: band_name_input_widget
+    points_input: points_input_widget
+    squad_label: squad_label_widget
+    points_label: points_label_widget
+
+    FloatLayout:
+        # Фоновое изображение
+        Image:
+            source: 'main_screen.png'
+            allow_stretch: True
+            keep_ratio: False
+            size_hint: 1, 1
+            pos_hint: {'x':0, 'y':0}
+
+        # Основной контейнер
+        BoxLayout:
+            orientation: 'vertical'
+            padding: 20
+            spacing: 20
+            size_hint: 0.9, 0.9
+            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+
+            # Название отряда
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint: None, None
+                size: 300, 100
+                pos_hint: {'center_x': 0.5}
+
+                Label:
+                    id: squad_label_widget
+                    text: 'Введите название отряда (не более 30 символов)'
+                    color: 0, 0, 0, 1
+                    font_size: 30
+                    size_hint_y: None
+                    height: 40
+
+                TextInput:
+                    id: band_name_input_widget
+                    font_size: 30
+                    multiline: False
+                    size_hint_x: None
+                    width: 450
+                    height: 50
+                    pos_hint: {'center_x': 0.5}
+
+
+            # Количество очков
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint: None, None
+                size: 300, 100
+                pos_hint: {'center_x': 0.5}
+
+                Label:
+                    id: points_label_widget
+                    text: 'Введите количество очков'
+                    color: 0, 0, 0, 1
+                    font_size: 30
+                    size_hint_y: None
+                    height: 40
+
+                TextInput:
+                    id: points_input_widget
+                    font_size: 30
+                    multiline: False
+                    size_hint_x: None
+                    height: 50
+                    pos_hint: {'center_x': 0.5}
+                    input_filter: 'int'
+
+            # Пустое пространство
+            Widget:
+                size_hint: 1, 1
+
+            # Кнопка
+            Button:
+                text: 'Начать!'
+                font_size: 30
+                size_hint: None, None
+                size: 200, 50
+                pos_hint: {'center_x': 0.5}
+                background_color: 0, 1, 0, 1
+                on_press: root.open_generator()
+
+<AbilitySelectionScreen>:
+    name: 'abilities'
+    ability1_spinner: ability1
+    ability2_spinner: ability2
+    description_label: desc_label
+
+    FloatLayout:
+        # Фоновое изображение
+        Image:
+            source: 'main_screen.png'
+            allow_stretch: True
+            keep_ratio: False
+            size_hint: 1, 1
+            pos_hint: {'x':0, 'y':0}
+
+        BoxLayout:
+            orientation: 'vertical'
+            padding: 20
+            spacing: 15
+
+            Label:
+                text: 'Выберите способности отряда'
+                font_size: 32
+                size_hint_y: None
+                height: 50
+                color: 0, 0, 0, 1
+                bold: True
+
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint_y: None
+                height: 50
+                spacing: 20
+                padding: [50, 0]
+
+                Spinner:
+                    id: ability1
+                    text: 'Выберите способность'
+                    values: ["Выберите способность"] + root.available_abilities
+                    size_hint: None, None
+                    size: 500, 44
+                    pos_hint: {'center_x': 0.5}
+                    on_text: root.on_spinner_select(self, self.text)
+                    font_size: 20
+
+                Spinner:
+                    id: ability2
+                    text: 'Выберите способность'
+                    values: ["Выберите способность"] + root.available_abilities
+                    size_hint: None, None
+                    size: 500, 44
+                    pos_hint: {'center_x': 0.5}
+                    on_text: root.on_spinner_select(self, self.text)
+                    font_size: 20
+
+            ScrollView:
+                size_hint_y: 0.7
+                bar_width: 10
+                scroll_type: ['bars', 'content']
+
+                Label:
+                    id: desc_label
+                    text: ''
+                    font_size: 24
+                    color: 0, 0, 0, 1
+                    size_hint_y: None
+                    height: max(self.texture_size[1], self.parent.height)
+                    text_size: self.width-200, None
+                    padding: 10, 10
+                    halign: 'left'
+                    valign: 'top'
+                    markup: True
+
+            Button:
+                id: btn_continue
+                text: 'Продолжить'
+                size_hint: None, None
+                size: 200, 50
+                pos_hint: {'center_x': 0.5}
+                disabled: True
+                on_press: root.proceed_to_generator()
+
+            Button:
+                id: btn_back
+                text: 'Назад'
+                size_hint: None, None
+                size: 200, 50
+                pos_hint: {'center_x': 0.5}
+                on_press: root.proceed_to_mainscreen()
+
+
+<AddFighterPopup>:
+    title: "Добавить бойца"
+    size_hint: 0.9, 0.9
+    auto_dismiss: False
+
+    fighter_name: name_input
+    type_spinner: type_spinner
+    abilities_layout: abilities_container
+    equipment_layout: equipment_container
+
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 20
+        spacing: 15
+
+        Label:
+            text: "Имя бойца:"
+            font_size: 30
+            size_hint_y: None
+            height: 40
+
+        TextInput:
+            id: name_input
+            font_size: 30
+            multiline: False
+            size_hint_x: None
+            size_hint_y: None
+            width: 450
+            height: 50
+            pos_hint: {'center_x': 0.5}
+
+        Label:
+            text: "Тип бойца:"
+            size_hint_y: None
+            height: 30
+
+        Spinner:
+            id: type_spinner
+            text: 'Выберите тип'
+            size_hint: None, None
+            pos_hint: {'center_x': 0.5}
+            height: 40
+            width: 450
+            on_text: root.on_type_selected(self, self.text)
+
+        ScrollView:
+            GridLayout:
+                cols: 2
+                size_hint_y: None
+                height: max(self.minimum_height, root.height * 0.35)
+                spacing: 10
+
+                # Колонка способностей
+                BoxLayout:
+                    id: abilities_container
+                    orientation: 'vertical'
+                    size_hint_x: 0.5
+                    spacing: 5
+
+                # Колонка предметов (4 слота)
+                BoxLayout:
+                    id: equipment_container
+                    orientation: 'vertical'
+                    size_hint_x: 0.5
+                    spacing: 5
+
+        BoxLayout:
+            size_hint_y: None
+            height: 40
+            Label:
+                id: total_cost_label
+                text: "Общая стоимость: 0 очков"
+
+        BoxLayout:
+            size_hint_y: None
+            height: 50
+            spacing: 20
+
+            Button:
+                text: "Добавить"
+                on_press: root.add_fighter()
+
+            Button:
+                text: "Отмена"
+                on_press: root.dismiss()
+
+<GeneratorScreen>:
+    name: 'generator'
+    static_label: static_label
+    abilities_label: abilities_label
+    fighters_layout: fighters_layout
+
+    FloatLayout:
+        Image:
+            source: 'main_screen.png'
+            allow_stretch: True
+            keep_ratio: False
+            size_hint: 1, 1
+            pos_hint: {'x':0, 'y':0}
+
+        ### ЛЕВАЯ ЧАСТЬ ###
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint: 0.55, 0.6
+            pos_hint: {'x': 0.05, 'top': 0.95}
+            spacing: dp(10)
+
+            Label:
+                id: static_label
+                size_hint_y: None
+                height: dp(120)
+                text_size: self.width, None
+                color: 0, 0, 0, 1
+                font_size: '24sp'
+                markup: True
+                halign: 'left'
+                valign: 'top'
+                padding: [dp(10), 0, 0, 0]
+
+            ScrollView:
+                bar_width: dp(10)
+
+                Label:
+                    id: abilities_label
+                    size_hint_y: None
+                    height: self.texture_size[1]
+                    text_size: self.width, None
+                    color: 0, 0, 0, 1
+                    font_size: '18sp'
+                    markup: True
+                    halign: 'left'
+                    valign: 'top'
+                    padding: [dp(10), 0, dp(10), 0]
+
+        ### ПРАВАЯ ЧАСТЬ ###
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint: 0.35, 0.8
+            pos_hint: {'right': 0.98, 'top': 0.9}
+            spacing: dp(30)
+            padding: [0, 0, 0, dp(20)]
+
+            Label:
+                text: "Ваши бойцы:"
+                size_hint_y: None
+                height: dp(50)
+                font_size: '20sp'
+                bold: True
+                color: 0, 0, 0, 1
+
+            ScrollView:
+                bar_width: dp(10)
+                scroll_type: ['bars', 'content']
+                padding: [0, 0, 0, dp(0)]  # Добавлен нижний отступ
+                effect_cls: "ScrollEffect"  # Для плавной прокрутки
+
+                GridLayout:
+                    id: fighters_layout
+                    cols: 1
+                    size_hint_y: None
+                    height: self.minimum_height
+                    spacing: dp(20)  # расстояние между карточками
+                    padding: [dp(5), dp(10), dp(15), dp(10)]
+
+        ### НИЖНИЙ БЛОК С КНОПКАМИ ###
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: 0.8, None
+            height: dp(110)
+            pos_hint: {'center_x': 0.5, 'y': 0.02}
+            spacing: dp(20)
+            padding: [0, 0, 0, dp(10)]
+
+            Button:
+                text: 'Назад'
+                size_hint: None, None
+                size: dp(200), dp(50)
+                on_press: root.proceed_to_abilities()
+
+            Button:
+                id: add_fighter_btn
+                text: 'Добавить бойца'
+                size_hint: None, None
+                size: dp(200), dp(50)
+                on_press: root.show_add_fighter_popup()
+
+            Button:
+                text: "Закончить сбор \n(экспорт в PDF)"
+                size_hint: None, None
+                size: dp(200), dp(50)
+                on_press: root.export_to_pdf()
+
+<ItemAbilityPopup>:
+    size_hint: 0.8, 0.8
+    auto_dismiss: False
+
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 10
+        spacing: 10
+
+        ScrollView:
+            Label:
+                id: info_label
+                size_hint_y: 0.8
+                text_size: self.width * 0.95, None
+                markup: True
+                halign: 'left'
+                valign: 'top'
+                padding: 10, 10
+
+        BoxLayout:
+            size_hint_y: 0.2
+            spacing: 10
+
+            Button:
+                text: 'Добавить'
+                on_press: root.on_confirm()
+
+            Button:
+                text: 'Отменить'
+                on_press: root.dismiss()
